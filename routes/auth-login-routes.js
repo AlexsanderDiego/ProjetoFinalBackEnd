@@ -1,5 +1,6 @@
 import { prisma } from '../config/db.js';
 import { Router } from "express";
+import bcrypt from "bcrypt"; // Adicionando o encript de senha
 
 const authLogin = Router();
 
@@ -16,13 +17,13 @@ authLogin.post("/auth/login", async (req, res) => {
     if (!user) {
         return res.json({ error: 'Usuário não encontrado' });
     }
-    // const passwordMatch = await bcrypt.compare(senha, user.senha);
-    // if (!passwordMatch) {
-    //     return res.json({ error: 'Senha incorreta' });
-    // }
-    if (senha !== user.senha) {
+    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    if (!passwordMatch) {
         return res.json({ error: 'Senha incorreta' });
     }
+    // if (senha !== user.senha) {
+    //     return res.json({ error: 'Senha incorreta' });
+    // }
     res.json(user);
 
     delete user.senha;
