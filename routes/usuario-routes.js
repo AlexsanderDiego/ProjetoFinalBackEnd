@@ -54,6 +54,7 @@ usuarioRoutes.post("/cadastrarusuarios", async (req, res) => {
     const user = req.body;
 
     const senhaEncriptada = await bcrypt.hash(user.senha, 10);
+    user.senha = senhaEncriptada;
     const usuario = await prisma.usuarios.create({
         data: user,
       });
