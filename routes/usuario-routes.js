@@ -66,4 +66,50 @@ usuarioRoutes.post("/cadastrarusuarios", async (req, res) => {
   }
 });
 
+//Atualizando Usuario
+usuarioRoutes.put("/atualizarusuarios/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const usuario = req.body;
+  delete usuario.senha;
+  const usuarioAtualizado = await prisma.usuarios.update({
+    where: {
+      id: id,
+    },
+    data: usuario,
+  });
+
+  res.send(usuarioAtualizado);
+});
+
+//Atualizando Senha
+usuarioRoutes.put("/atualizarsenha/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const senha = req.body;
+
+  const senhaEncriptada = await bcrypt.hash(senha.senha, 10);
+  senha.senha = senhaEncriptada;
+
+  const senhaAtualizada = await prisma.usuarios.update({
+    where: {
+      id: id,
+    },
+    data: senha,
+  });
+
+  res.send(senhaAtualizada);
+});
+
+//Deletando Usuario
+usuarioRoutes.delete("/usuarios/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  const usuarioDeletado = await prisma.usuarios.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  res.send(usuarioDeletado);
+});
+
 export { usuarioRoutes }
