@@ -33,14 +33,29 @@ linksRoutes.get("/link/:id", async (req, res) => {
   res.send(link);
 });
 
+//Retornando os links de um usuario pelo usuariosId do usuario
+linksRoutes.get("/links/usuarios/:usuariosId", async (req, res) => {
+  const usuariosId = Number(req.params.usuariosId);
+  const links = await prisma.links.findMany({
+    where: {
+      usuariosId: usuariosId,
+    },
+    select: selectFields,
+  });
+
+  res.send(links);
+});
+
 //Retornando os links de um unico usuario pelo nome de usuario do usuario
 linksRoutes.get("/links/:user", async (req, res) => {
   const usuario = req.params.user;
   const usuarioComLinks = await prisma.usuarios.findUnique({
     where: { usuario: usuario },
         select: {
+            id: true,
           nome: true,
           usuario: true,
+          email: true,
           Links: {
             select: {
               url: true,
