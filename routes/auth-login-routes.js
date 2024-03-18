@@ -5,30 +5,25 @@ import bcrypt from "bcrypt"; // Adicionando o encript de senha
 const authLogin = Router();
 
 authLogin.post("/auth/login", async (req, res) => {
-    const { usuario, senha } = req.body;
-    console.log('username', usuario);
+    const { email, senha } = req.body;
+    console.log('email', email);
     console.log('password', senha);
 
-    const user = await prisma.usuarios.findUnique({
+    const emailUser = await prisma.usuarios.findUnique({
         where: {
-            usuario: usuario,
+            email: email,
         },
     });
-    if (!user) {
+    if (!emailUser) {
         return res.json({ error: 'Usuário não encontrado' });
     }
-    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    const passwordMatch = await bcrypt.compare(senha, emailUser.senha);
     if (!passwordMatch) {
         return res.json({ error: 'Senha incorreta' });
     }
-    // if (senha !== user.senha) {
-    //     return res.json({ error: 'Senha incorreta' });
-    // }
-    res.json(user);
 
-    delete user.senha;
-    // res.json(user);
-    console.log(user);
+    delete emailUser.senha;
+    res.json(emailUser);
     console.log('Usuário logado com sucesso');
 });
 
