@@ -13,7 +13,6 @@ const selectFields = {
 
 //Retornando todos os usuários
 usuarioRoutes.get("/usuarios", async (req, res) => {
-  
   const usuarios = await prisma.usuarios.findMany({
     select: selectFields,
   });
@@ -56,8 +55,8 @@ usuarioRoutes.post("/cadastrarusuarios", async (req, res) => {
     const senhaEncriptada = await bcrypt.hash(user.senha, 10);
     user.senha = senhaEncriptada;
     const usuario = await prisma.usuarios.create({
-        data: user,
-      });
+      data: user,
+    });
 
     res.status(201).send("User created successfully");
     console.log(usuario);
@@ -100,7 +99,7 @@ usuarioRoutes.put("/atualizarsenha/:id", async (req, res) => {
 });
 
 //Deletando Usuario
-usuarioRoutes.delete("/usuarios/:id", async (req, res) => {
+usuarioRoutes.delete("/apagarusuario/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   const usuarioDeletado = await prisma.usuarios.delete({
@@ -112,4 +111,4 @@ usuarioRoutes.delete("/usuarios/:id", async (req, res) => {
   res.send(usuarioDeletado);
 });
 
-export { usuarioRoutes }
+export { usuarioRoutes };
