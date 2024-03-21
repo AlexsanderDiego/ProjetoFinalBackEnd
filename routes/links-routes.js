@@ -47,43 +47,44 @@ linksRoutes.get("/links/usuarios/:usuariosId", async (req, res) => {
 });
 
 //Retornando os links de um unico usuario pelo nome de usuario do usuario
-linksRoutes.get("/links/:user", async (req, res) => {
-  const usuario = req.params.user;
+linksRoutes.get("/links/:id", async (req, res) => {
+  const id = Number(req.params.id);
   const usuarioComLinks = await prisma.usuarios.findUnique({
-    where: { usuario: usuario },
+    where: { id: id },
+    select: {
+      id: true,
+      nome: true,
+      usuario: true,
+      email: true,
+      Links: {
         select: {
-            id: true,
-          nome: true,
-          usuario: true,
-          email: true,
-          Links: {
-            select: {
-              url: true,
-              titulo: true,
-            },
-          },
+          url: true,
+          titulo: true,
         },
-    });
-
-    res.send(usuarioComLinks);
+      },
+    },
   });
 
+  res.send(usuarioComLinks);
+});
 
 //Adicionando Link
 linksRoutes.post("/cadastrarlinks", async (req, res) => {
   const link = req.body;
-
+  console.log(link);
+  const addLink = Number(req.body.usuariosId);
+  link.usuariosId = addLink;
   const linkCadastrado = await prisma.links.create({
     data: link,
   });
 
-  res.status(201).send(`Link created successfully, ${linkCadastrado}`);
+  res.status(201).send(`Link created successfully`);
 
   console.log(linkCadastrado);
 });
 
 //Atualizando Link
-linksRoutes.put("/links/:id", async (req, res) => {
+linksRoutes.put("/atualizarlink/:id", async (req, res) => {
   const id = Number(req.params.id);
   const link = req.body;
 
@@ -98,7 +99,7 @@ linksRoutes.put("/links/:id", async (req, res) => {
 });
 
 //Deletando Link
-linksRoutes.delete("/links/:id", async (req, res) => {
+linksRoutes.delete("/apagarlink/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   const linkDeletado = await prisma.links.delete({
