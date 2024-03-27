@@ -69,7 +69,9 @@ usuarioRoutes.post("/cadastrarusuarios", async (req, res) => {
 usuarioRoutes.put("/atualizarusuarios/:id", async (req, res) => {
   const id = Number(req.params.id);
   const usuario = req.body;
-  delete usuario.senha;
+  const senhaEncriptada = await bcrypt.hash(usuario.senha, 10);
+  usuario.senha = senhaEncriptada;
+  // delete usuario.senha;
   const usuarioAtualizado = await prisma.usuarios.update({
     where: {
       id: id,
