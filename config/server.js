@@ -1,11 +1,14 @@
 import express from "express";
-// import cors from "cors";
-const cors = require('cors');
-import 'dotenv/config';
+import cors from "cors";
+import "dotenv/config";
 
 const server = express();
 
-server.use(cors());
+server.use(
+  cors({
+    origin: "https://links.alexdiego.com.br",
+  })
+);
 server.use(express.json());
 
 server.listen(3000, () => {
